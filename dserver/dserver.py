@@ -11,7 +11,6 @@ import socket
 import threading
 import asyncio
 
-from mytemplate.sockettemp import SocketTemplate as temp
 
 logger = logging.getLogger(__name__)
 
@@ -48,9 +47,11 @@ class ServerSocket:
         self._client = []
         self.socket = None
 
-    def create_socket(self,
-                      socket_family, socket_type,
-                      *list_args, **dict_args):
+    async def create_socket(
+        self,
+        socket_family: socket.AddressFamily,
+        socket_type: socket.SocketKind,
+    ):
         """[summary]
 
         Parameters
@@ -65,21 +66,21 @@ class ServerSocket:
         [type]
             [description]
         """
-        l_a = list_args
-        d_a = dict_args
         try:
-            # this blow block code is worse
-            self.socket = socket.socket()
+            self.socket = socket.socket(
+                socket_family,
+                socket_type,
+            )
             socket.setdefaulttimeout(False)
-        except OSError:
-            logger.error("cant create server socket")
-            return False
-        else:
-            mess = temp().create_server_socket(tuple(self.socket))
+            mess = "Success create server socket: {}".format(self.socket)
             logger.info(mess)
             return True
+        except OSError:
+            mess = "False create server socket"
+            logger.error(mess)
+            return False
 
-    def bind_socket(self, host_data):
+    async def bind_socket(self, host_data):
         """bind address to server socket
 
         Parameters
@@ -95,7 +96,7 @@ class ServerSocket:
         self.socket.bind(host_data)
         logger.info("succes server socket bind")
 
-    def start_lisning_client(self, how_many=1):
+    async def start_lisning_client(self, how_many=1):
         """[summary]
 
         Parameters
@@ -103,9 +104,15 @@ class ServerSocket:
         how_many : int, optional
             [description], by default 1
         """
-        self.socket.listen(how_many)
-        mess = temp().start_server()
-        logger.info(mess)
+        try:
+            self.socket.listen(how_many)
+            mess = ""
+            logger.info(mess)
+            return True
+        except OSError as e:
+            mess = "Fatal start listening {}".format(e.strerror)
+            logger.error(mess)
+            return False
 
     async def accept_client(self, loop):
         """this function will work only when get client connection.
@@ -120,13 +127,13 @@ class ServerSocket:
         try:
             (connect_data, client_addr) = loop.run_until_compleate(
                 new_loop.sock_accept(self.socket)
-                )
+            )
         except OSError as e:
             logger.error("%s", e)
         return (connect_data, client_addr)
     # eternal loop
 
-    def add_clients(self, cl_sock, addr):
+    async def add_clients(self, cl_sock, addr):
         if type(addr) != tuple:
             raise ValueError
         self._client.append(cl_sock, addr)
@@ -134,7 +141,7 @@ class ServerSocket:
         logger.info(mess)
         return True
 
-    def create_on_client_thread(self, client_data):
+    async def create_on_client_thread(self, client_data):
         """this member function is wating while server working.
             this loop is fundamentally infinity loop.
 
@@ -150,7 +157,7 @@ class ServerSocket:
                 with client_socket:
                     logger.info(temp().client_socket_data(
                         client_socket, client_addr
-                        ))
+                    ))
                     chat_thread = threading.Thread(
                         target=ServerSocket.loop_chat_handler,
                         args=(client_socket, client_addr),
@@ -194,7 +201,7 @@ class ServerSocket:
         try:
             message = loop.run_until_compleate(
                 nloop.sock_recv(client_socket, 4096)
-                )
+            )
         except Exception as e:
             logger.error(e)
         return message

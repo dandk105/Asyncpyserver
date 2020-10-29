@@ -2,15 +2,23 @@
 # space level: 4
 """this module is the most importing in thie app.
 """
+import sys
+import asyncio
 
-from dserver import ServerSocket as server
-from config import ConfManage as conf
+from .dserver import ServerSocket
+from .config import ConfManage as conf
 
 
 if __name__ == "__main__":
     # would manage conf class
-    hostdata = conf("./conf/base.json")
-    hostdata.setup_logging()
-    server = server()
-    server.standby_server()
-    server.accept_client()
+    try:
+        current_loop = asyncio.get_running_loop()
+        asyncio.set_event_loop(current_loop)
+        hostdata = conf()
+        hostdata.setup_logging()
+        server = ServerSocket()
+        result = await server.create_socket()
+        if result is False:
+            sys.exit()
+    except OSError:
+        pass

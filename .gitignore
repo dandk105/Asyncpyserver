@@ -11,6 +11,7 @@ include
 bin
 lib
 lib64
+share/
 
 #user create txt file
 *txt
