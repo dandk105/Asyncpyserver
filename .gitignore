@@ -1,0 +1,23 @@
+#base .vscode created file from vev command log
+
+#vscode folder
+.vscode
+
+#log file
+logs/
+
+#venv command relations
+include
+bin
+lib
+lib64
+
+#user create txt file
+*txt
+!requirements.txt
+
+#python binary code
+__pycache__/
+
+#relational sphinx project
+build/
