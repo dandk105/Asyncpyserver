@@ -9,7 +9,10 @@ from .dserver import ServerSocket
 from .config import ConfManage as conf
 
 
-if __name__ == "__main__":
+async def main():
+    """
+    docstring
+    """
     # would manage conf class
     try:
         current_loop = asyncio.get_running_loop()
@@ -22,3 +25,6 @@ if __name__ == "__main__":
             sys.exit()
     except OSError:
         pass
+
+
+asyncio.run(main())

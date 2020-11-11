@@ -18,7 +18,7 @@ share/
 !requirements.txt
 
 #python binary code
-__pycache__/
+__pycache__
 
 #relational sphinx project
 build/

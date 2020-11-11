@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 # tab level: 4
-#!/usr/bin/env python3
-"""this module will control all settings
+# !/usr/bin/env python3
+"""
+this module setting a logging module
+in started this server.
 """
 
 
@@ -34,6 +36,7 @@ class ConfManage:
     subsclibe_client(client_address)
 
     """
+
     def __init__(self, env_path):
         self.abs_path = None
         self.confi_set = {}
@@ -91,7 +94,6 @@ class ConfManage:
             raise customerr.PathError
         except Exception as e:
             logger.error(e)
-            raise Exception
         else:
             return str(abs_path)
 
@@ -159,6 +161,3 @@ class ConfManage:
             conf_tuple = conf_dict[ip_port[0]], conf_dict[ip_port[1]]
         logger.info("%s", "compleate this app conf")
         return conf_tuple
-
-    def get_plaformdata(self):
-        pass
