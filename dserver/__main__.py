@@ -18,9 +18,8 @@ async def main():
         current_loop = asyncio.get_running_loop()
         asyncio.set_event_loop(current_loop)
         hostdata = conf()
-        hostdata.setup_logging()
         server = ServerSocket()
-        result = await server.create_socket()
+        result = await server.create_socket(hostdata.address, hostdata.port)
         if result is False:
             sys.exit()
     except OSError:

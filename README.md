@@ -5,6 +5,10 @@ working envioroment of this server is cli.
 it's not only working this.
 you should install dclient if you want to chat other pepole.
 
+### Cation
+
+This project is my studing about socket working.
+
 ## Envioroment
 
 python 3.6+
@@ -35,9 +39,10 @@ pip install pytest pytest-asyncio
 pytest
 
 ```
+
 ## Authors
 
-* **[dandk105](https://github.com/dandk105)**
+- **[dandk105](https://github.com/dandk105)**
 
 ## License
 

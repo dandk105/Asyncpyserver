@@ -14,8 +14,6 @@ import json
 import os
 from pathlib import Path
 
-from mytemplate.errorclass import CustomError as customerr
-
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
@@ -37,20 +35,38 @@ class ConfManage:
 
     """
 
-    def __init__(self, env_path):
+    def __init__(
+        self,
+        address: str = None,
+        port: int = None,
+        env_path: str = None
+    ):
+        self.address = "127.0.0.1"
+        self.port = 9000
         self.abs_path = None
         self.confi_set = {}
         self.env = os.getenv("PY_SERVER_CONF")
+        # WILL: remove these if statement
         if env_path is None:
             self.rel_path = self.env
         else:
             self.rel_path = env_path
+        config_list = []
+        addr = os.getenv("PY_SERVER_ADDRESS")
+        port = os.getenv("PY_SERVER_PORT")
+        for i in [addr, port]:
+            if i is not None:
+                config_list.append(i)
+        if len(config_list) == 2:
+            self.address = config_list[0]
+            self.port = config_list[1]
 
-    def setup_logging(self,
-                      Defaultpath="./conf/logconf.json",
-                      Defaultlevel=logging.INFO,
-                      Envkey="LOG_CFG"
-                      ):
+    def setup_logging(
+        self,
+        Defaultpath="./conf/logconf.json",
+        Defaultlevel=logging.INFO,
+        Envkey="LOG_CFG"
+    ):
         """this method setting of logging.
         default logging level is INFO.
         if you want to change level,you should change Defaultlevel parameters.
@@ -90,8 +106,6 @@ class ConfManage:
                 relative_path = self.rel_path
             rel_path = Path(relative_path)
             abs_path = rel_path.resolve(strict=True)
-        except FileNotFoundError:
-            raise customerr.PathError
         except Exception as e:
             logger.error(e)
         else:
